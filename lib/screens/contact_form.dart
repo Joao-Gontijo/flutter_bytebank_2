@@ -1,7 +1,18 @@
+import 'package:bytebank_2/models/contact.dart';
 import 'package:flutter/material.dart';
 
-class ContactForm extends StatelessWidget {
+class ContactForm extends StatefulWidget {
   const ContactForm({Key? key}) : super(key: key);
+
+  @override
+  State<ContactForm> createState() => _ContactFormState();
+}
+
+class _ContactFormState extends State<ContactForm> {
+  final TextEditingController _nameController = TextEditingController();
+
+  final TextEditingController _accountNumberController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +25,17 @@ class ContactForm extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const TextField(
-              decoration: InputDecoration(labelText: 'Full name'),
-              style: TextStyle(
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(labelText: 'Full name'),
+              style: const TextStyle(
                 fontSize: 24,
               ),
             ),
-            const TextField(
-              decoration: InputDecoration(labelText: 'Account number'),
-              style: TextStyle(
+            TextField(
+              controller: _accountNumberController,
+              decoration: const InputDecoration(labelText: 'Account number'),
+              style: const TextStyle(
                 fontSize: 24,
               ),
               keyboardType: TextInputType.number,
@@ -33,10 +46,24 @@ class ContactForm extends StatelessWidget {
                 width: double.maxFinite,
                 child: ElevatedButton(
                   onPressed: () {
+                    final String name = _nameController.text;
+                    final int? accountNumber =
+                        int.tryParse(_accountNumberController.text);
 
+                    if (name.isEmpty || accountNumber == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Campos inválidos'),
+                        ),
+                      );
+                    } else {
+                      final contact = Contact(name, accountNumber);
+                      debugPrint(contact.toString());
+                      Navigator.pop(context);
+                    }
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).primaryColor,
+                    primary: Theme.of(context).primaryColor,
                   ),
                   child: const Text('Create'),
                 ),
