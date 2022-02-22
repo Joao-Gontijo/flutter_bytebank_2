@@ -1,9 +1,10 @@
+import 'package:bytebank_2/models/contact.dart';
 import 'package:flutter/material.dart';
 
 import 'contact_form.dart';
 
 class ContactsList extends StatelessWidget {
-  const ContactsList({Key? key}) : super(key: key);
+  final List<Contact> contacts = [];
 
   @override
   Widget build(BuildContext context) {
@@ -12,21 +13,12 @@ class ContactsList extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         title: const Text('Contacts'),
       ),
-      body: ListView(
-        children: const [
-          Card(
-            child: ListTile(
-              title: Text(
-                'Nome',
-                style: TextStyle(fontSize: 24),
-              ),
-              subtitle: Text(
-                'Número da Conta',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-          )
-        ],
+      body: ListView.builder(
+        itemCount: contacts.length,
+        itemBuilder: (context, index) {
+          final Contact contact = contacts[index];
+          return _ContactItem(contact);
+        },
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
@@ -35,6 +27,28 @@ class ContactsList extends StatelessWidget {
               .push(MaterialPageRoute(builder: (context) => ContactForm()));
         },
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class _ContactItem extends StatelessWidget {
+  final Contact contact;
+
+  _ContactItem(this.contact);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: Text(
+          contact.name,
+          style: TextStyle(fontSize: 24),
+        ),
+        subtitle: Text(
+          contact.accountNumber.toString(),
+          style: TextStyle(fontSize: 16),
+        ),
       ),
     );
   }
