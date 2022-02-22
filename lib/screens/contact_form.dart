@@ -57,7 +57,7 @@ class _ContactFormState extends State<ContactForm> {
                         ),
                       );
                     } else {
-                      final contact = Contact(name, accountNumber);
+                      final contact = Contact(0, name, accountNumber);
                       debugPrint(contact.toString());
                       Navigator.pop(context);
                     }
