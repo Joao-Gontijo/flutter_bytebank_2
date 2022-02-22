@@ -1,11 +1,10 @@
+import 'package:bytebank_2/databases/app_database.dart';
 import 'package:bytebank_2/models/contact.dart';
 import 'package:flutter/material.dart';
 
 import 'contact_form.dart';
 
 class ContactsList extends StatelessWidget {
-  final List<Contact> contacts = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,11 +12,34 @@ class ContactsList extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         title: const Text('Contacts'),
       ),
-      body: ListView.builder(
-        itemCount: contacts.length,
-        itemBuilder: (context, index) {
-          final Contact contact = contacts[index];
-          return _ContactItem(contact);
+      body: FutureBuilder(
+        future: Future.delayed(const Duration(seconds: 2))
+            .then((context) => findAll()),
+        builder: (context, snapshot) {
+          if (snapshot.data != null) {
+            final List<Contact>? contacts = snapshot.data as List<Contact>?;
+            return ListView.builder(
+              itemCount: contacts!.length,
+              itemBuilder: (context, index) {
+                final Contact contact = contacts[index];
+                return _ContactItem(contact);
+              },
+            );
+          } else {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: Colors.green,
+                    backgroundColor: Theme.of(context).primaryColor,
+                  ),
+                  const Text('Loading'),
+                ],
+              ),
+            );
+          }
         },
       ),
       floatingActionButton: FloatingActionButton(
