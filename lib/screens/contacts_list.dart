@@ -12,34 +12,43 @@ class ContactsList extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         title: const Text('Contacts'),
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<List<Contact>>(
+        initialData: [],
         future: Future.delayed(const Duration(seconds: 2))
             .then((context) => findAll()),
         builder: (context, snapshot) {
-          if (snapshot.data != null) {
-            final List<Contact>? contacts = snapshot.data as List<Contact>?;
-            return ListView.builder(
-              itemCount: contacts!.length,
-              itemBuilder: (context, index) {
-                final Contact contact = contacts[index];
-                return _ContactItem(contact);
-              },
-            );
-          } else {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    color: Colors.green,
-                    backgroundColor: Theme.of(context).primaryColor,
-                  ),
-                  const Text('Loading'),
-                ],
-              ),
-            );
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              break;
+            case ConnectionState.waiting:
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      color: Colors.green,
+                      backgroundColor: Theme.of(context).primaryColor,
+                    ),
+                    const Text('Loading'),
+                  ],
+                ),
+              );
+              break;
+            case ConnectionState.active:
+              break;
+            case ConnectionState.done:
+              final List<Contact>? contacts = snapshot.data;
+              return ListView.builder(
+                itemCount: contacts!.length,
+                itemBuilder: (context, index) {
+                  final Contact contact = contacts[index];
+                  return _ContactItem(contact);
+                },
+              );
+              break;
           }
+          return const Text('Unknown Error');
         },
       ),
       floatingActionButton: FloatingActionButton(
