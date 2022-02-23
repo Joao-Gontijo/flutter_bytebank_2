@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 
 import 'contact_form.dart';
 
-class ContactsList extends StatelessWidget {
+class ContactsList extends StatefulWidget {
+  @override
+  State<ContactsList> createState() => _ContactsListState();
+}
+
+class _ContactsListState extends State<ContactsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,8 +19,7 @@ class ContactsList extends StatelessWidget {
       ),
       body: FutureBuilder<List<Contact>>(
         initialData: [],
-        future: Future.delayed(const Duration(seconds: 2))
-            .then((context) => findAll()),
+        future: findAll(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -39,13 +43,22 @@ class ContactsList extends StatelessWidget {
               break;
             case ConnectionState.done:
               final List<Contact>? contacts = snapshot.data;
-              return ListView.builder(
-                itemCount: contacts!.length,
-                itemBuilder: (context, index) {
-                  final Contact contact = contacts[index];
-                  return _ContactItem(contact);
-                },
-              );
+              if (contacts!.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'No contacts found!',
+                    style: TextStyle(fontSize: 24),
+                  ),
+                );
+              } else {
+                return ListView.builder(
+                  itemCount: contacts.length,
+                  itemBuilder: (context, index) {
+                    final Contact contact = contacts[index];
+                    return _ContactItem(contact);
+                  },
+                );
+              }
               break;
           }
           return const Text('Unknown Error');
@@ -55,7 +68,12 @@ class ContactsList extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: () {
           Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => ContactForm()));
+              .push(
+                MaterialPageRoute(
+                  builder: (context) => ContactForm(),
+                ),
+              )
+              .then((value) => setState(() {}));
         },
         child: const Icon(Icons.add),
       ),
@@ -74,11 +92,11 @@ class _ContactItem extends StatelessWidget {
       child: ListTile(
         title: Text(
           contact.name,
-          style: TextStyle(fontSize: 24),
+          style: const TextStyle(fontSize: 24),
         ),
         subtitle: Text(
           contact.accountNumber.toString(),
-          style: TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16),
         ),
       ),
     );

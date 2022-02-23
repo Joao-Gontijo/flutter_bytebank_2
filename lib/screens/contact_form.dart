@@ -1,3 +1,4 @@
+import 'package:bytebank_2/databases/app_database.dart';
 import 'package:bytebank_2/models/contact.dart';
 import 'package:flutter/material.dart';
 
@@ -58,8 +59,7 @@ class _ContactFormState extends State<ContactForm> {
                       );
                     } else {
                       final contact = Contact(0, name, accountNumber);
-                      debugPrint(contact.toString());
-                      Navigator.pop(context);
+                      save(contact).then((id) => Navigator.pop(context));
                     }
                   },
                   style: ElevatedButton.styleFrom(
