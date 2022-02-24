@@ -62,7 +62,9 @@ class _ContactsListState extends State<ContactsList> {
                         key: UniqueKey(),
                         direction: DismissDirection.endToStart,
                         onDismissed: (direction) {
-                          _dao.delete(contact.id);
+                          _dao.delete(contact.id).then((value) => setState(() {
+                                contacts.removeAt(index);
+                              }));
                         },
                         background: Container(
                           decoration: BoxDecoration(
