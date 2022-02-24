@@ -1,5 +1,6 @@
 import 'package:bytebank_2/databases/dao/contact_dao.dart';
 import 'package:bytebank_2/models/contact.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'contact_form.dart';
@@ -57,7 +58,28 @@ class _ContactsListState extends State<ContactsList> {
                   itemCount: contacts.length,
                   itemBuilder: (context, index) {
                     final Contact contact = contacts[index];
-                    return _ContactItem(contact);
+                    return Dismissible(
+                        key: UniqueKey(),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) {
+                          _dao.delete(contact.id);
+                        },
+                        background: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.red,
+                          ),
+                          margin: const EdgeInsets.all(8),
+                          alignment: Alignment.centerRight,
+                          child: const Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        child: _ContactItem(contact));
                   },
                 );
               }
@@ -72,7 +94,7 @@ class _ContactsListState extends State<ContactsList> {
           Navigator.of(context)
               .push(
                 MaterialPageRoute(
-                  builder: (context) => ContactForm(),
+                  builder: (context) => const ContactForm(),
                 ),
               )
               .then((value) => setState(() {}));
@@ -83,21 +105,28 @@ class _ContactsListState extends State<ContactsList> {
   }
 }
 
-class _ContactItem extends StatelessWidget {
+class _ContactItem extends StatefulWidget {
   final Contact contact;
 
-  _ContactItem(this.contact);
+  const _ContactItem(this.contact);
+
+  @override
+  State<_ContactItem> createState() => _ContactItemState();
+}
+
+class _ContactItemState extends State<_ContactItem> {
+  final ContactDao _dao = ContactDao();
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
         title: Text(
-          contact.name,
+          widget.contact.name,
           style: const TextStyle(fontSize: 24),
         ),
         subtitle: Text(
-          contact.accountNumber.toString(),
+          widget.contact.accountNumber.toString(),
           style: const TextStyle(fontSize: 16),
         ),
       ),
