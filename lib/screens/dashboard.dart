@@ -19,23 +19,57 @@ class Dashboard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Image.asset('images/bytebank_logo.png'),
           ),
-          Row(
-            children: [
-              _FeatureItem('Transfer', Icons.monetization_on),
-              _FeatureItem('Transaction Feed', Icons.description),
-            ],
+          Container(
+            height: 120,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                Row(
+                  children: [
+                    _FeatureItem(
+                      'Transfer',
+                      Icons.monetization_on,
+                      onClick: () {
+                        _showContactsList(context);
+                      },
+                    ),
+                    _FeatureItem(
+                      'Transaction Feed',
+                      Icons.description,
+                      onClick: () {
+                        print('Transaction Feed clicked');
+                      },
+                    ),
+                    _FeatureItem(
+                      'Test',
+                      Icons.warning,
+                      onClick: () => print('Test'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           )
         ],
+      ),
+    );
+  }
+
+  void _showContactsList(context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ContactsList(),
       ),
     );
   }
 }
 
 class _FeatureItem extends StatelessWidget {
-  final String _name;
-  final IconData _icon;
+  final String name;
+  final IconData icon;
+  Function onClick;
 
-  _FeatureItem(this._name, this._icon);
+  _FeatureItem(this.name, this.icon, {required this.onClick});
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +79,7 @@ class _FeatureItem extends StatelessWidget {
         color: Theme.of(context).primaryColor,
         child: InkWell(
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ContactsList(),
-              ),
-            );
+            onClick();
           },
           child: Container(
             height: 100,
@@ -61,12 +91,12 @@ class _FeatureItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
-                    _icon,
+                    icon,
                     color: Colors.white,
                     size: 24.0,
                   ),
                   Text(
-                    _name,
+                    name,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16.0,
