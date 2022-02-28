@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'contact_form.dart';
 
 class ContactsList extends StatefulWidget {
+  const ContactsList({Key? key}) : super(key: key);
+
   @override
   State<ContactsList> createState() => _ContactsListState();
 }
@@ -21,7 +23,7 @@ class _ContactsListState extends State<ContactsList> {
         title: const Text('Transfer'),
       ),
       body: FutureBuilder<List<Contact>>(
-        initialData: [],
+        initialData: const [],
         future: _dao.findAll(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
@@ -41,7 +43,6 @@ class _ContactsListState extends State<ContactsList> {
                   ],
                 ),
               );
-              break;
             case ConnectionState.active:
               break;
             case ConnectionState.done:
@@ -85,7 +86,6 @@ class _ContactsListState extends State<ContactsList> {
                   },
                 );
               }
-              break;
           }
           return const Text('Unknown Error');
         },
@@ -117,8 +117,6 @@ class _ContactItem extends StatefulWidget {
 }
 
 class _ContactItemState extends State<_ContactItem> {
-  final ContactDao _dao = ContactDao();
-
   @override
   Widget build(BuildContext context) {
     return Card(
