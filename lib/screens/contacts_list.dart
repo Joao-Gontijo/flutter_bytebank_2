@@ -1,3 +1,4 @@
+import 'package:bytebank_2/components/progress.dart';
 import 'package:bytebank_2/databases/dao/contact_dao.dart';
 import 'package:bytebank_2/models/contact.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,25 +25,14 @@ class _ContactsListState extends State<ContactsList> {
       ),
       body: FutureBuilder<List<Contact>>(
         initialData: const [],
-        future: _dao.findAll(),
+        future:
+            Future.delayed(const Duration(seconds: 1), () => _dao.findAll()),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
               break;
             case ConnectionState.waiting:
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      color: Colors.green,
-                      backgroundColor: Theme.of(context).primaryColor,
-                    ),
-                    const Text('Loading'),
-                  ],
-                ),
-              );
+              return Progress();
             case ConnectionState.active:
               break;
             case ConnectionState.done:
