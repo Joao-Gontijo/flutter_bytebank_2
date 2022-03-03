@@ -31,7 +31,8 @@ class LoggingInterceptor implements InterceptorContract {
 Future<List<Transaction>> findAll() async {
   final Client client =
       InterceptedClient.build(interceptors: [LoggingInterceptor()]);
-  final Response response = await client.get(Constants.uri);
+  final Response response =
+      await client.get(Constants.uri).timeout(Duration(seconds: 5));
   final List<dynamic> decodedJson = jsonDecode(response.body);
   final List<Transaction> transactions = [];
   for (Map<String, dynamic> element in decodedJson) {
