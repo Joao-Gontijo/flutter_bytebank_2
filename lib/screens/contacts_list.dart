@@ -1,4 +1,4 @@
-import 'package:bytebank_2/components/not_found_text.dart';
+import 'package:bytebank_2/components/centered_message.dart';
 import 'package:bytebank_2/components/progress.dart';
 import 'package:bytebank_2/databases/dao/contact_dao.dart';
 import 'package:bytebank_2/models/contact.dart';
@@ -38,9 +38,7 @@ class _ContactsListState extends State<ContactsList> {
               break;
             case ConnectionState.done:
               final List<Contact>? contacts = snapshot.data;
-              if (contacts!.isEmpty) {
-                return NotFoundText('No contacts found!');
-              } else {
+              if (contacts!.isNotEmpty) {
                 return ListView.builder(
                   itemCount: contacts.length,
                   itemBuilder: (context, index) {
@@ -72,8 +70,9 @@ class _ContactsListState extends State<ContactsList> {
                   },
                 );
               }
+              return CenteredMessage('No contacts found!');
           }
-          return const Text('Unknown Error');
+          return CenteredMessage('Unknown Error');
         },
       ),
       floatingActionButton: FloatingActionButton(
