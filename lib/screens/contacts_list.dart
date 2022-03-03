@@ -1,3 +1,4 @@
+import 'package:bytebank_2/components/not_found_text.dart';
 import 'package:bytebank_2/components/progress.dart';
 import 'package:bytebank_2/databases/dao/contact_dao.dart';
 import 'package:bytebank_2/models/contact.dart';
@@ -38,12 +39,7 @@ class _ContactsListState extends State<ContactsList> {
             case ConnectionState.done:
               final List<Contact>? contacts = snapshot.data;
               if (contacts!.isEmpty) {
-                return const Center(
-                  child: Text(
-                    'No contacts found!',
-                    style: TextStyle(fontSize: 24),
-                  ),
-                );
+                return NotFoundText('No contacts found!');
               } else {
                 return ListView.builder(
                   itemCount: contacts.length,

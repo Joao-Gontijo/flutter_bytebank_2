@@ -1,3 +1,4 @@
+import 'package:bytebank_2/components/not_found_text.dart';
 import 'package:bytebank_2/components/progress.dart';
 import 'package:bytebank_2/http/webclient.dart';
 import 'package:bytebank_2/models/transaction.dart';
@@ -26,7 +27,7 @@ class TransactionsList extends StatelessWidget {
               final List<Transaction>? transactions =
                   snapshot.data as List<Transaction>?;
               if (transactions!.isEmpty) {
-                return const Center(child: Text('No transactions found!'));
+                return NotFoundText('No transactions found!');
               } else {
                 return ListView.builder(
                   itemBuilder: (context, index) {
