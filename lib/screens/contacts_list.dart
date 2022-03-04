@@ -2,7 +2,7 @@ import 'package:bytebank_2/components/centered_message.dart';
 import 'package:bytebank_2/components/progress.dart';
 import 'package:bytebank_2/databases/dao/contact_dao.dart';
 import 'package:bytebank_2/models/contact.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:bytebank_2/screens/transaction_form.dart';
 import 'package:flutter/material.dart';
 
 import 'contact_form.dart';
@@ -44,29 +44,36 @@ class _ContactsListState extends State<ContactsList> {
                   itemBuilder: (context, index) {
                     final Contact contact = contacts[index];
                     return Dismissible(
-                        key: UniqueKey(),
-                        direction: DismissDirection.endToStart,
-                        onDismissed: (direction) {
-                          _dao.delete(contact.id).then((value) => setState(() {
-                                contacts.removeAt(index);
-                              }));
-                        },
-                        background: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.red,
-                          ),
-                          margin: const EdgeInsets.all(8),
-                          alignment: Alignment.centerRight,
-                          child: const Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                            ),
+                      key: UniqueKey(),
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (direction) {
+                        _dao.delete(contact.id).then((value) => setState(() {
+                              contacts.removeAt(index);
+                            }));
+                      },
+                      background: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.red,
+                        ),
+                        margin: const EdgeInsets.all(8),
+                        alignment: Alignment.centerRight,
+                        child: const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
                           ),
                         ),
-                        child: _ContactItem(contact));
+                      ),
+                      child: _ContactItem(contact, onClick: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => TransactionForm(contact),
+                          ),
+                        );
+                      }),
+                    );
                   },
                 );
               }
@@ -94,8 +101,9 @@ class _ContactsListState extends State<ContactsList> {
 
 class _ContactItem extends StatefulWidget {
   final Contact contact;
+  final Function onClick;
 
-  const _ContactItem(this.contact);
+  _ContactItem(this.contact, {required this.onClick});
 
   @override
   State<_ContactItem> createState() => _ContactItemState();
@@ -106,6 +114,7 @@ class _ContactItemState extends State<_ContactItem> {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        onTap: () => widget.onClick(),
         title: Text(
           widget.contact.name,
           style: const TextStyle(fontSize: 24),
