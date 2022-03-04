@@ -3,18 +3,24 @@ import 'package:bytebank_2/models/contact.dart';
 import 'package:bytebank_2/models/transaction.dart';
 import 'package:flutter/material.dart';
 
-class TransactionForm extends StatelessWidget {
+class TransactionForm extends StatefulWidget {
   final Contact contact;
 
   TransactionForm(this.contact);
 
-  TextEditingController _valueController = TextEditingController();
+  @override
+  State<TransactionForm> createState() => _TransactionFormState();
+}
+
+class _TransactionFormState extends State<TransactionForm> {
+  final TextEditingController _valueController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
+          title: const Text('New transfer'),
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,14 +28,14 @@ class TransactionForm extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8),
               child: Text(
-                contact.name,
+                widget.contact.name,
                 style: const TextStyle(fontSize: 24),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8),
               child: Text(
-                contact.accountNumber.toString(),
+                widget.contact.accountNumber.toString(),
                 style:
                     const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),
@@ -56,7 +62,7 @@ class TransactionForm extends StatelessWidget {
                       final double? value =
                           double.tryParse(_valueController.text);
                       if (value != null) {
-                        save(Transaction(value, contact))
+                        save(Transaction(value, widget.contact))
                             .then((transaction) => Navigator.pop(context));
                       }
                     },
