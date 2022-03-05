@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:bytebank_2/http/webclient.dart';
-import 'package:bytebank_2/models/contact.dart';
 import 'package:bytebank_2/models/transaction.dart';
 import 'package:http/http.dart';
 
@@ -17,9 +16,7 @@ class TransactionWebClient {
   }
 
   Future<Transaction> save(Transaction transaction) async {
-    Map<String, dynamic> transactionMap = _toMap(transaction);
-
-    final String transactionJson = jsonEncode(transactionMap);
+    final String transactionJson = jsonEncode(transaction.toJson());
 
     final Response response = await client.post(Constants.uri,
         headers: {
@@ -28,47 +25,19 @@ class TransactionWebClient {
         },
         body: transactionJson);
 
-    Map<String, dynamic> json = jsonDecode(response.body);
-    return _toTransaction(json);
+    return _toTransaction(response);
   }
 
   List<Transaction> _toTransactions(List<dynamic> decodedJson) {
     final List<Transaction> transactions = [];
     for (Map<String, dynamic> element in decodedJson) {
-      final Map<String, dynamic> contactJson = element['contact'];
-      final Transaction transaction = Transaction(
-        element['value'],
-        Contact(
-          0,
-          contactJson['name'],
-          contactJson['accountNumber'],
-        ),
-      );
-      transactions.add(transaction);
+      transactions.add(Transaction.fromJson(element));
     }
     return transactions;
   }
 
-  Map<String, dynamic> _toMap(Transaction transaction) {
-    final Map<String, dynamic> transactionMap = {
-      'value': transaction.value,
-      'contact': {
-        'name': transaction.contact.name,
-        'accountNumber': transaction.contact.accountNumber,
-      }
-    };
-    return transactionMap;
-  }
-
-  Transaction _toTransaction(Map<String, dynamic> json) {
-    final Map<String, dynamic> contactJson = json['contact'];
-    return Transaction(
-      json['value'],
-      Contact(
-        0,
-        contactJson['name'],
-        contactJson['accountNumber'],
-      ),
-    );
+  Transaction _toTransaction(Response response) {
+    Map<String, dynamic> json = jsonDecode(response.body);
+    return Transaction.fromJson(json);
   }
 }
