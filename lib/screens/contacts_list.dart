@@ -103,7 +103,7 @@ class _ContactItem extends StatefulWidget {
   final Contact contact;
   final Function onClick;
 
-  _ContactItem(this.contact, {required this.onClick});
+  const _ContactItem(this.contact, {required this.onClick});
 
   @override
   State<_ContactItem> createState() => _ContactItemState();
