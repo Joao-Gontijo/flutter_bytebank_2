@@ -25,7 +25,7 @@ class TransactionWebClient {
         },
         body: transactionJson);
 
-    return _toTransaction(response);
+    return Transaction.fromJson(jsonDecode(response.body));
   }
 
   List<Transaction> _toTransactions(List<dynamic> decodedJson) {
@@ -34,10 +34,5 @@ class TransactionWebClient {
       transactions.add(Transaction.fromJson(element));
     }
     return transactions;
-  }
-
-  Transaction _toTransaction(Response response) {
-    Map<String, dynamic> json = jsonDecode(response.body);
-    return Transaction.fromJson(json);
   }
 }
